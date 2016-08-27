@@ -52,6 +52,22 @@ module.exports = function(app, passport) {
 		});
 	})
 
+	//Return the user's tags on the tag page
+	app.get('/alltags', function(req, res, next) {
+		Tag.findAll({
+			where: {
+				userId: 1 // need to replace this with the actual user's id
+			}
+		}).then(function(tags) {
+			var allTags = tags.map(tag => {return tag.get({plain : true})});
+			res.status(200);  
+			res.set({
+				'Content-Type': 'application/json'  
+			});  
+			res.send(allTags);
+		});
+	})
+
 	app.post('/postrecipe', addrecipe);
 	app.post('/addtag', addtag);
 };
