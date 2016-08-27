@@ -1,8 +1,11 @@
+var Recipe = require('../models/database').Recipe;
+var Tag = require('../models/database').Tag;
 var addrecipe = require('../controllers/addrecipe');
+var addtag = require('../controllers/addtag');
 
 module.exports = function(app, passport) {
 	
-	app.post('/postrecipe', addrecipe);
+	
 
 	app.get('/auth/facebook', passport.authenticate('facebook', { scope : 'email' }));
 		
@@ -28,9 +31,29 @@ module.exports = function(app, passport) {
 		res.redirect('http://localhost:3000/#/login');
 	});
 
-	app.get('/recipes', isLoggedIn, function(req, res, next) {
-		res.sendStatus(500);
+
+	//Return the user's recipes on the recipe page
+	app.get('/recipes', function(req, res, next) {
+		Recipe.findAll({
+			where: {
+				userId: 1 // need to replace this with the actual user's id
+			},
+			include: [{
+				model: Tag,
+			}]
+			
+		}).then(function(recipes) {
+			var allRecipes = recipes.map(recipe => {return recipe.get({plain : true})});
+			res.status(200);  
+			res.set({
+				'Content-Type': 'application/json'  
+			});  
+			res.send(allRecipes);
+		});
 	})
+
+	app.post('/postrecipe', addrecipe);
+	app.post('/addtag', addtag);
 };
 
 function isLoggedIn(req, res, next) {
