@@ -2,7 +2,7 @@ var Recipe = require('../models/database').Recipe;
 var Tag = require('../models/database').Tag;
 var addrecipe = require('../controllers/addrecipe');
 var addtag = require('../controllers/addtag');
-
+var searchbytag = require('../controllers/searchbytag');
 module.exports = function(app, passport) {
 	
 	
@@ -70,6 +70,7 @@ module.exports = function(app, passport) {
 
 	app.post('/postrecipe', addrecipe);
 	app.post('/addtag', addtag);
+	app.post('/searchbytag', searchbytag);
 };
 
 function isLoggedIn(req, res, next) {

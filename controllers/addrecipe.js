@@ -31,8 +31,5 @@ module.exports = function(req, res) {
             console.log(created)
         })
     }
-    
-
-    
     res.sendStatus(200);
 };
