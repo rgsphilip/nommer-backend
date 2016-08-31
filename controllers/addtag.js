@@ -5,6 +5,7 @@ module.exports = function(req, res) {
     console.log('we did it: ', req.body);
     var tagTitle = req.body.tag; 
     var recipeId = req.body.recipeId;
+    var userId = req.user.sub;
     Recipe.findOne({
         where: {
             id: recipeId
@@ -13,7 +14,12 @@ module.exports = function(req, res) {
     }).then(function(foundRecipe) {
         console.log("inside then", foundRecipe);
         Tag
-        .findOrCreate({where: {tagName: tagTitle}, defaults: {}})
+        .findOrCreate({where: {
+            tagName: tagTitle,
+            userId: userId
+        }, 
+            defaults: {}
+        })
         .spread(function(tag, created) {
             foundRecipe.addTag(tag); //add the tag to the join
             console.log(tag.get({

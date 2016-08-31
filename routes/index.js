@@ -1,42 +1,17 @@
 var Recipe = require('../models/database').Recipe;
 var Tag = require('../models/database').Tag;
+var Grocery = require('../models/database').Grocery;
 var addrecipe = require('../controllers/addrecipe');
 var addtag = require('../controllers/addtag');
 var searchbytag = require('../controllers/searchbytag');
-module.exports = function(app, passport) {
+var addgrocery= require('../controllers/addgrocery');
+module.exports = function(app, authCheck) {
 	
-	
-
-	app.get('/auth/facebook', passport.authenticate('facebook', { scope : 'email' }));
-		
-		// the callback after facebook has authenticated the user    
-	app.get('/auth/facebook/callback',
-		passport.authenticate('facebook', {
-			successRedirect : 'http://localhost:3000/#/',
-			failureRedirect : 'http://localhost:3000/#/login'
-	}));
-
-	app.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
-
-	// the callback after google has authenticated the user
-	app.get('/auth/google/callback',
-		passport.authenticate('google', {
-			successRedirect : 'http://localhost:3000/#/',
-			failureRedirect : 'http://localhost:3000/#/login'
-		}));
-
-	//logout
-	app.get('/logout', function(req, res) {
-		req.logout();
-		res.redirect('http://localhost:3000/#/login');
-	});
-
-
 	//Return the user's recipes on the recipe page
-	app.get('/recipes', function(req, res, next) {
+	app.get('/recipes', authCheck, function(req, res, next) {
 		Recipe.findAll({
 			where: {
-				userId: 1 // need to replace this with the actual user's id
+				userId: req.user.sub
 			},
 			include: [{
 				model: Tag,
@@ -53,10 +28,10 @@ module.exports = function(app, passport) {
 	})
 
 	//Return the user's tags on the tag page
-	app.get('/alltags', function(req, res, next) {
+	app.get('/alltags', authCheck, function(req, res, next) {
 		Tag.findAll({
 			where: {
-				userId: 1 // need to replace this with the actual user's id
+				userId: req.user.sub
 			}
 		}).then(function(tags) {
 			var allTags = tags.map(tag => {return tag.get({plain : true})});
@@ -66,19 +41,25 @@ module.exports = function(app, passport) {
 			});  
 			res.send(allTags);
 		});
-	})
+	});
 
-	app.post('/postrecipe', addrecipe);
-	app.post('/addtag', addtag);
-	app.post('/searchbytag', searchbytag);
+	app.get('/allgroceries', authCheck, function(req, res, next) {
+		Grocery.findAll({
+			where: {
+				userId: req.user.sub
+			}
+		}).then(function(groceries) {
+			var allGroceries = groceries.map(grocery => {return grocery.get({plain : true})});
+			res.status(200);  
+			res.set({
+				'Content-Type': 'application/json'  
+			});  
+			res.send(allGroceries);
+		});
+	});
+
+	app.post('/postrecipe', authCheck, addrecipe);
+	app.post('/addtag', authCheck, addtag);
+	app.post('/searchbytag', authCheck, searchbytag);
+	app.post('/postgroceries', authCheck, addgrocery);
 };
-
-function isLoggedIn(req, res, next) {
-	console.log(req.isAuthenticated());	
-	if (req.isAuthenticated()) {
-		console.log('is logged in');
-		return next();
-	}
-	console.log('not logged in');
-	res.redirect('http://localhost:3000/#/login/');
-}

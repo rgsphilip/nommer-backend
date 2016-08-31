@@ -10,7 +10,15 @@ var passport = require('passport');
 var connectFlash = require('connect-flash');
 var flash = require('flash');
 var users = require('./routes/users');
+var jwt = require('express-jwt');
+var cors = require('cors');
 var app = express();
+app.use(cors());
+
+const authCheck = jwt({
+  secret: new Buffer('Qh2HguPy5YqeRpwNKG7YQCGbXpI5sbcbQI4rvE4tfk5c1uBal6QPQsvCA1zZ5YVa', 'base64'),
+  audience: 'TL6WvwO2DMfOKAUgK4WuWWzbkN57qVyk'
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -41,13 +49,13 @@ app.use('/users', users);
 
 //initialize passport
 //app.use(clientSessions);
-app.use(session({secret: 'cookiesessionidthingy', saveUninitialized: true, resave: true}));
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(connectFlash());
-app.use(flash());
-require('./config/passport')(passport); // pass passport for configuration
-var routes = require('./routes/index.js')(app, passport);
+// app.use(session({secret: 'cookiesessionidthingy', saveUninitialized: true, resave: true}));
+// app.use(passport.initialize());
+// app.use(passport.session());
+// app.use(connectFlash());
+// app.use(flash());
+// require('./config/passport')(passport); // pass passport for configuration
+var routes = require('./routes/index.js')(app, authCheck);
 
 
 
