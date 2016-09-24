@@ -1,6 +1,8 @@
 var Sequelize = require('Sequelize');
 var sequelize = new Sequelize('postgres://localhost:5432/nommer');
 
+
+//may reimplement at some future point if I want user info like name/email
 // var User = sequelize.define('user', {
 //   authId: {
 //       type: Sequelize.STRING,

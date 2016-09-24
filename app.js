@@ -15,14 +15,13 @@ var cors = require('cors');
 var app = express();
 app.use(cors());
 
+//Utilized https://scotch.io/tutorials/build-a-react-flux-app-with-user-authentication to implement authentication, including this code snippet.
 const authCheck = jwt({
   secret: new Buffer('Qh2HguPy5YqeRpwNKG7YQCGbXpI5sbcbQI4rvE4tfk5c1uBal6QPQsvCA1zZ5YVa', 'base64'),
   audience: 'TL6WvwO2DMfOKAUgK4WuWWzbkN57qVyk'
+  
 });
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
 app.set('port', process.env.PORT || 3001);
 
 app.use(function (req, res, next) {
@@ -46,19 +45,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/users', users);
-
-//initialize passport
-//app.use(clientSessions);
-// app.use(session({secret: 'cookiesessionidthingy', saveUninitialized: true, resave: true}));
-// app.use(passport.initialize());
-// app.use(passport.session());
-// app.use(connectFlash());
-// app.use(flash());
-// require('./config/passport')(passport); // pass passport for configuration
 var routes = require('./routes/index.js')(app, authCheck);
-
-
-
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

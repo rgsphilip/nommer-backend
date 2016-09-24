@@ -28,16 +28,5 @@ module.exports = function(req, res) {
             });  
             res.send(allGroceries);
         });
-
-    // ingredientArray.forEach(ingredient => {
-    //     Grocery.create({
-    //         groceryName : ingredient, 
-    //         userId : req.user.sub
-    //     }).then(function(user) {
-    //         console.log(user.get({
-    //             plain: true
-    //         }))
-    //     })
-    // })
     
 };

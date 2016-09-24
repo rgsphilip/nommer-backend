@@ -5,6 +5,7 @@ var addrecipe = require('../controllers/addrecipe');
 var addtag = require('../controllers/addtag');
 var searchbytag = require('../controllers/searchbytag');
 var addgrocery= require('../controllers/addgrocery');
+var deletegrocery= require('../controllers/deletegrocery');
 module.exports = function(app, authCheck) {
 	
 	//Return the user's recipes on the recipe page
@@ -62,4 +63,5 @@ module.exports = function(app, authCheck) {
 	app.post('/addtag', authCheck, addtag);
 	app.post('/searchbytag', authCheck, searchbytag);
 	app.post('/postgroceries', authCheck, addgrocery);
+	app.post('/deletegroceries', authCheck, deletegrocery);
 };
