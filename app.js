@@ -1,3 +1,4 @@
+var secret = require('./secret');
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -15,10 +16,11 @@ var cors = require('cors');
 var app = express();
 app.use(cors());
 
+
 //Utilized https://scotch.io/tutorials/build-a-react-flux-app-with-user-authentication to implement authentication, including this code snippet.
 const authCheck = jwt({
-  secret: new Buffer('Qh2HguPy5YqeRpwNKG7YQCGbXpI5sbcbQI4rvE4tfk5c1uBal6QPQsvCA1zZ5YVa', 'base64'),
-  audience: 'TL6WvwO2DMfOKAUgK4WuWWzbkN57qVyk'
+  secret: new Buffer(secret.secret, 'base64'),
+  audience: secret.audience
   
 });
 

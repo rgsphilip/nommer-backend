@@ -1,5 +1,6 @@
+var secret = require('../secret');
 var Sequelize = require('Sequelize');
-var sequelize = new Sequelize('postgres://localhost:5432/nommer');
+var sequelize = new Sequelize(secret.database);
 
 
 //may reimplement at some future point if I want user info like name/email
